@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "182766745323",
+    "firebase_url": "https://schoolapp-167-default-rtdb.firebaseio.com",
+    "project_id": "schoolapp-167",
+    "storage_bucket": "schoolapp-167.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:182766745323:android:f2ff0b4a093cb7c39570ae",
+        "android_client_info": {
+          "package_name": "com.ByEmilchiks.School"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "182766745323-ajc5qu313e2ngv5nn686ads8altsfk13.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ByEmilchiks.School",
+            "certificate_hash": "cd4fec2ffaaaa628876a4590b2520a2c577ae880"
+          }
+        },
+        {
+          "client_id": "182766745323-ta097fpuvnb55r5b04b98k0qkknpdo80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqS2m4-0eAoJmgIGVREfVrPj96k89qMYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "182766745323-ta097fpuvnb55r5b04b98k0qkknpdo80.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
