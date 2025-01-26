@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,14 +9,19 @@ using TMPro;
 
 public class BookRequester : MonoBehaviour
 {
-    public string apiUrl = "https://api.github.com/repos/emilchiks/Storage-For-School-Project/contents/Books";
+    public string apiUrl = "https://api.github.com/repos/emilchiks/Storage-For-School-Project/contents/Books/Library?ref=main";
+    public string coversUrl = "https://api.github.com/repos/emilchiks/Storage-For-School-Project/contents/Books/Covers?ref=main";
 
     // Токен доступа (опционально, если репозиторий приватный)
     [SerializeField] private string authToken = "";
 
-
-    public Transform contentParent; // Родитель для спавна (например, ScrollView Content)
     public GameObject bookPrefab; // Префаб для книги
+
+    public Transform container10thGrade; // Контейнер для 10 класса
+    public Transform container11thGrade; // Контейнер для 11 класса
+    public Transform containerUnknownGrade; // Контейнер для неизвестного класса
+
+    private Dictionary<string, string> coverUrls = new Dictionary<string, string>();
 
 
 
@@ -30,103 +36,228 @@ public class BookRequester : MonoBehaviour
         {
             // Установить заголовок User-Agent
             request.SetRequestHeader("User-Agent", "Unity-Request");
-
+    
             // Добавление заголовка Authorization, если используется токен
             if (!string.IsNullOrEmpty(authToken))
             {
                 request.SetRequestHeader("Authorization", "token " + authToken);
             }
-
+    
             // Отправить запрос и дождаться ответа
             yield return request.SendWebRequest();
-
+    
             if (request.result == UnityWebRequest.Result.Success)
             {
                 Debug.Log("Response Text: " + request.downloadHandler.text);
-
+    
                 try
                 {
                     string jsonResponse = request.downloadHandler.text;
                     JArray contentArray = JArray.Parse(jsonResponse);
-                
+    
                     foreach (var item in contentArray)
                     {
-                        // Проверяем, содержит ли объект поле "type"
+                        string fileName = item["name"]?.ToString();
+                        string downloadUrl = item["download_url"]?.ToString();
+    
                         if (item["type"] != null && item["type"].ToString() == "file")
                         {
-                            string fileName = item["name"]?.ToString();
-                            string downloadUrl = item["download_url"]?.ToString();
-                
-                            if (!string.IsNullOrEmpty(fileName) && !string.IsNullOrEmpty(downloadUrl))
+                            if (!string.IsNullOrEmpty(fileName) && fileName.EndsWith(".pdf"))
                             {
-                                Debug.Log("File: " + fileName);
-                
-                                // Спавним префаб
-                                SpawnBookPrefab(fileName, downloadUrl);
+                                Debug.Log("PDF File: " + fileName);
+                                string className = GetClassName(fileName);
+                                if (className == "10")
+                                {
+                                    SpawnBookPrefab(fileName, downloadUrl, container10thGrade);
+                                }
+                                else if (className == "11")
+                                {
+                                    SpawnBookPrefab(fileName, downloadUrl, container11thGrade);
+                                }
+                                else
+                                {
+                                    SpawnBookPrefab(fileName, downloadUrl, containerUnknownGrade);
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Skipping non-PDF file: {fileName}");
                             }
                         }
-                        else
+                        else if (item["type"] != null && item["type"].ToString() == "dir")
                         {
-                            Debug.LogWarning("Skipping item without type or not a file.");
+                            // Если это каталог, рекурсивно обрабатываем его
+                            string newUrl = item["url"]?.ToString();
+                            StartCoroutine(GetFileNames(newUrl)); // Рекурсивный вызов для обхода подкаталогов
                         }
                     }
+                    StartCoroutine(LoadCovers(coversUrl));
                 }
                 catch (System.Exception ex)
                 {
                     Debug.LogError("Error parsing JSON: " + ex.Message);
-                    Debug.Log("Full API Response: " + request.downloadHandler.text);
-
                 }
             }
             else
             {
                 Debug.LogError("Error fetching files: " + request.error);
-                Debug.Log("Response Text: " + request.downloadHandler.text);
             }
         }
     }
 
-    private void SpawnBookPrefab(string fileName, string downloadUrl)
+    private IEnumerator LoadCovers(string url)
     {
-        GameObject bookInstance = Instantiate(bookPrefab, contentParent);
-    
-        // Найти элементы
-        Transform fileNameTextTransform = bookInstance.transform.Find("FileNameText");
-        Transform downloadButtonTransform = bookInstance.transform.Find("DownloadButton");
-        Transform openFileButtonTransform = bookInstance.transform.Find("OpenFileButton");
-    
-        if (fileNameTextTransform == null || downloadButtonTransform == null || openFileButtonTransform == null)
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            Debug.LogError("Prefab is missing required components (FileNameText, DownloadButton, or OpenFileButton).");
+            request.SetRequestHeader("User-Agent", "Unity-Request");
+
+            if (!string.IsNullOrEmpty(authToken))
+            {
+                request.SetRequestHeader("Authorization", "token " + authToken);
+            }
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                try
+                {
+                    string jsonResponse = request.downloadHandler.text;
+                    JArray contentArray = JArray.Parse(jsonResponse);
+
+                    foreach (var item in contentArray)
+                    {
+                        if (item["type"] != null && item["type"].ToString() == "file")
+                        {
+                            string fileName = item["name"]?.ToString();
+                            string downloadUrl = item["download_url"]?.ToString();
+
+                            if (!string.IsNullOrEmpty(fileName) && fileName.EndsWith(".png"))
+                            {
+                                string baseName = Path.GetFileNameWithoutExtension(fileName);
+                                coverUrls[baseName] = downloadUrl; // Сохраняем соответствие обложки
+                            }
+                        }
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError("Error parsing covers JSON: " + ex.Message);
+                }
+            }
+            else
+            {
+                Debug.LogError("Error fetching covers: " + request.error);
+            }
+        }
+    }
+
+    
+    private string GetClassName(string fileName)
+    {
+        try
+        {
+            string baseName = Path.GetFileNameWithoutExtension(fileName);
+            string[] parts = baseName.Split('_');
+            return parts.Length > 0 ? parts[0] : "";
+        }
+        catch
+        {
+            Debug.LogError($"Error parsing class from file name {fileName}");
+            return "";
+        }
+    }
+
+    private void SpawnBookPrefab(string fileName, string downloadUrl, Transform container)
+    {
+        GameObject bookInstance = Instantiate(bookPrefab, container);
+
+        Transform fileNameTextTransform = bookInstance.transform.Find("FileNameText");
+        Transform yearTextTransform = bookInstance.transform.Find("YearText");
+        Transform downloadButtonTransform = bookInstance.transform.Find("DownloadButton");
+        Transform coverImageTransform = bookInstance.transform.Find("CoverImage");
+
+        if (fileNameTextTransform == null || yearTextTransform == null || downloadButtonTransform == null || coverImageTransform == null)
+        {
+            Debug.LogError("Prefab is missing required components.");
             return;
         }
-    
-        Text fileNameText = fileNameTextTransform.GetComponent<Text>();
+
+        TextMeshProUGUI fileNameText = fileNameTextTransform.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI yearText = yearTextTransform.GetComponent<TextMeshProUGUI>();
         Button downloadButton = downloadButtonTransform.GetComponent<Button>();
-        Button openFileButton = openFileButtonTransform.GetComponent<Button>();
-    
+        Image coverImage = coverImageTransform.GetComponent<Image>();
+
+        string bookName = "";
+        string year = "";
+        string index = "";
+
+        try
+        {
+            string baseName = Path.GetFileNameWithoutExtension(fileName);
+            string[] parts = baseName.Split('_');
+
+            if (parts.Length == 4)
+            {
+                bookName = parts[1];
+                year = parts[2];
+                index = parts[3];
+            }
+            else
+            {
+                Debug.LogWarning($"Unexpected file name format: {fileName}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Error parsing file name {fileName}: {ex.Message}");
+        }
+
         if (fileNameText != null)
         {
-            fileNameText.text = fileName;
+            fileNameText.text = bookName;
         }
-    
+
+        if (yearText != null)
+        {
+            yearText.text = year;
+        }
+
         if (downloadButton != null)
         {
             downloadButton.onClick.AddListener(() => StartCoroutine(DownloadFile(downloadUrl, fileName)));
         }
-    
-        if (openFileButton != null)
+
+        if (coverImage != null && coverUrls.TryGetValue(index, out string coverUrl))
         {
-            openFileButton.onClick.AddListener(() => OpenFile(fileName));
+            StartCoroutine(LoadCoverImage(coverUrl, coverImage));
         }
     }
-    
+
+    private IEnumerator LoadCoverImage(string url, Image targetImage)
+    {
+        using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                targetImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+            }
+            else
+            {
+                Debug.LogError($"Error loading cover image: {request.error}");
+            }
+        }
+    }
+
     private IEnumerator DownloadFile(string url, string fileName)
     {
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
-    
+
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string filePath = Path.Combine(Application.persistentDataPath, fileName);
@@ -139,8 +270,9 @@ public class BookRequester : MonoBehaviour
             }
         }
     }
+}
     
-    private void OpenFile(string fileName)
+    /*private void OpenFile(string fileName)
     {
         string filePath = Path.Combine(Application.persistentDataPath, fileName);
     
@@ -153,5 +285,4 @@ public class BookRequester : MonoBehaviour
         {
             Debug.LogError("File does not exist: " + filePath);
         }
-    }
-}
+    }*/
