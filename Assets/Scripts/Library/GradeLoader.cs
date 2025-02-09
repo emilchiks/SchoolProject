@@ -5,14 +5,19 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GradeLoader : MonoBehaviour
 {
     // URL к XML-файлу на GitHub
-    private string xmlUrl = "https://raw.githubusercontent.com/emilchiks/Storage-For-School-Project/main/Books/Library.xml";
+    public string xmlUrl = "https://raw.githubusercontent.com/emilchiks/Storage-For-School-Project/main/Books/Library.xml";
 
     // Список кнопок для классов
     [SerializeField] private List<GradeButton> gradeButtons;
+
+    public GameObject ErrorSpawner;
+    public Transform ErrorSpawnPlace;
+    public GameObject ErrorObject;
 
     // Стартовая функция Unity
     private async void Start()
@@ -37,6 +42,12 @@ public class GradeLoader : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogError($"Ошибка: {ex.Message}");
+
+            ErrorSpawner.SetActive(true);
+            GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+            Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+            TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+            panelErrorText.text = $"Ошибка: {ex.Message}";
         }
     }
 

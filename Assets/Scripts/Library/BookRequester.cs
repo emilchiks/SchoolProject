@@ -30,6 +30,10 @@ public class BookRequester : MonoBehaviour
     public Transform container11thGrade; // Контейнер для 11 класса
     public Transform containerUnknownGrade; // Контейнер для неизвестного класса
 
+
+    public GameObject ErrorSpawner;
+    public Transform ErrorSpawnPlace;
+    public GameObject ErrorObject;
    
 
 
@@ -107,11 +111,23 @@ public class BookRequester : MonoBehaviour
                 catch (System.Exception ex)
                 {
                     Debug.LogError("Error parsing JSON: " + ex.Message);
+
+                    ErrorSpawner.SetActive(true);
+                    GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+                    Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+                    TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+                    panelErrorText.text = "Error parsing JSON: " + ex.Message;
                 }
             }
             else
             {
                 Debug.LogError("Error fetching files: " + request.error);
+
+                ErrorSpawner.SetActive(true);
+                GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+                Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+                TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+                panelErrorText.text = "Error fetching files: " + request.error;
             }
         }
     }
@@ -131,6 +147,12 @@ public class BookRequester : MonoBehaviour
         {
             Debug.LogError($"Error parsing class from file name {fileName}");
             return "";
+
+            ErrorSpawner.SetActive(true);
+            GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+            Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+            TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+            panelErrorText.text = $"Error parsing class from file name {fileName}";
         }
     }
 
@@ -147,6 +169,12 @@ public class BookRequester : MonoBehaviour
         {
             Debug.LogError("Prefab is missing required components.");
             return;
+
+            ErrorSpawner.SetActive(true);
+            GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+            Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+            TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+            panelErrorText.text = "Prefab is missing required components.";
         }
 
         TextMeshProUGUI fileNameText = fileNameTextTransform.GetComponent<TextMeshProUGUI>();
@@ -177,6 +205,12 @@ public class BookRequester : MonoBehaviour
         catch (System.Exception ex)
         {
             Debug.LogError($"Error parsing file name {fileName}: {ex.Message}");
+
+            ErrorSpawner.SetActive(true);
+            GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+            Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+            TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+            panelErrorText.text = $"Error parsing file name {fileName}: {ex.Message}";
         }
 
         if (fileNameText != null)
@@ -220,6 +254,12 @@ public class BookRequester : MonoBehaviour
             else
             {
                 Debug.LogError($"Error downloading file {fileName}: {request.error}");
+
+                ErrorSpawner.SetActive(true);
+                GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+                Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+                TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+                panelErrorText.text = $"Error downloading file {fileName}: {request.error}";
             }
         }
     }
