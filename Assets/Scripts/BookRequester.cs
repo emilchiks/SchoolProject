@@ -10,7 +10,6 @@ using TMPro;
 public class BookRequester : MonoBehaviour
 {
     public string apiUrl = "https://api.github.com/repos/emilchiks/Storage-For-School-Project/contents/Books/Library?ref=main";
-    public string coversUrl = "https://api.github.com/repos/emilchiks/Storage-For-School-Project/contents/Books/Covers?ref=main";
 
     // Токен доступа (опционально, если репозиторий приватный)
     [SerializeField] private string authToken = "";
@@ -21,8 +20,7 @@ public class BookRequester : MonoBehaviour
     public Transform container11thGrade; // Контейнер для 11 класса
     public Transform containerUnknownGrade; // Контейнер для неизвестного класса
 
-    private Dictionary<string, string> coverUrls = new Dictionary<string, string>();
-
+   
 
 
     void Start()
@@ -91,7 +89,6 @@ public class BookRequester : MonoBehaviour
                             StartCoroutine(GetFileNames(newUrl)); // Рекурсивный вызов для обхода подкаталогов
                         }
                     }
-                    StartCoroutine(LoadCovers(coversUrl));
                 }
                 catch (System.Exception ex)
                 {
@@ -105,52 +102,7 @@ public class BookRequester : MonoBehaviour
         }
     }
 
-    private IEnumerator LoadCovers(string url)
-    {
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
-        {
-            request.SetRequestHeader("User-Agent", "Unity-Request");
-
-            if (!string.IsNullOrEmpty(authToken))
-            {
-                request.SetRequestHeader("Authorization", "token " + authToken);
-            }
-
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                try
-                {
-                    string jsonResponse = request.downloadHandler.text;
-                    JArray contentArray = JArray.Parse(jsonResponse);
-
-                    foreach (var item in contentArray)
-                    {
-                        if (item["type"] != null && item["type"].ToString() == "file")
-                        {
-                            string fileName = item["name"]?.ToString();
-                            string downloadUrl = item["download_url"]?.ToString();
-
-                            if (!string.IsNullOrEmpty(fileName) && fileName.EndsWith(".png"))
-                            {
-                                string baseName = Path.GetFileNameWithoutExtension(fileName);
-                                coverUrls[baseName] = downloadUrl; // Сохраняем соответствие обложки
-                            }
-                        }
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError("Error parsing covers JSON: " + ex.Message);
-                }
-            }
-            else
-            {
-                Debug.LogError("Error fetching covers: " + request.error);
-            }
-        }
-    }
+    
 
     
     private string GetClassName(string fileName)
@@ -228,27 +180,14 @@ public class BookRequester : MonoBehaviour
             downloadButton.onClick.AddListener(() => StartCoroutine(DownloadFile(downloadUrl, fileName)));
         }
 
-        if (coverImage != null && coverUrls.TryGetValue(index, out string coverUrl))
+        Sprite coverSprite = Resources.Load<Sprite>("Covers/" + index);
+        if (coverSprite != null)
         {
-            StartCoroutine(LoadCoverImage(coverUrl, coverImage));
+            coverImage.sprite = coverSprite;
         }
-    }
-
-    private IEnumerator LoadCoverImage(string url, Image targetImage)
-    {
-        using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
+        else
         {
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-                targetImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-            }
-            else
-            {
-                Debug.LogError($"Error loading cover image: {request.error}");
-            }
+            Debug.LogWarning("Cover not found: " + index);
         }
     }
 
