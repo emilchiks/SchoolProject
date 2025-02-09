@@ -16,6 +16,16 @@ public class BookRequester : MonoBehaviour
 
     public GameObject bookPrefab; // Префаб для книги
 
+    public Transform container1Grade;
+    public Transform container2Grade;
+    public Transform container3Grade;
+    public Transform container4Grade;
+    public Transform container5Grade;
+    public Transform container6Grade;
+    public Transform container7Grade;
+    public Transform container8Grade;
+    public Transform container9Grade;
+
     public Transform container10thGrade; // Контейнер для 10 класса
     public Transform container11thGrade; // Контейнер для 11 класса
     public Transform containerUnknownGrade; // Контейнер для неизвестного класса
@@ -64,18 +74,22 @@ public class BookRequester : MonoBehaviour
                             {
                                 Debug.Log("PDF File: " + fileName);
                                 string className = GetClassName(fileName);
-                                if (className == "10")
+                                Transform targetContainer = className switch
                                 {
-                                    SpawnBookPrefab(fileName, downloadUrl, container10thGrade);
-                                }
-                                else if (className == "11")
-                                {
-                                    SpawnBookPrefab(fileName, downloadUrl, container11thGrade);
-                                }
-                                else
-                                {
-                                    SpawnBookPrefab(fileName, downloadUrl, containerUnknownGrade);
-                                }
+                                    "1" => container1Grade,
+                                    "2" => container2Grade,
+                                    "3" => container3Grade,
+                                    "4" => container4Grade,
+                                    "5" => container5Grade,
+                                    "6" => container6Grade,
+                                    "7" => container7Grade,
+                                    "8" => container8Grade,
+                                    "9" => container9Grade,
+                                    "10" => container10thGrade,
+                                    "11" => container11thGrade,
+                                    _ => containerUnknownGrade
+                                };
+                                SpawnBookPrefab(fileName, downloadUrl, targetContainer);
                             }
                             else
                             {
