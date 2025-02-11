@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using TMPro;
 
 [System.Serializable]
 public class Commit
@@ -32,6 +33,15 @@ public class GitHubChangeChecker : MonoBehaviour
     // Интервал проверки (в секундах)
     public float checkInterval = 60f;
 
+    public GameObject ErrorSpawner;
+    public Transform ErrorSpawnPlace;
+    public GameObject ErrorObject;
+
+    public Transform MessageSpawnPlace;
+    public GameObject MessageObject;
+
+    public GameObject MessageIcon;
+
     void Start()
     {
         StartCoroutine(CheckForChanges());
@@ -47,33 +57,52 @@ public class GitHubChangeChecker : MonoBehaviour
     {
         UnityWebRequest request = UnityWebRequest.Get(apiUrl);
         yield return request.SendWebRequest();
-
+    
         if (request.result == UnityWebRequest.Result.Success)
         {
             string jsonResponse = request.downloadHandler.text;
-
+    
             // Десериализация массива JSON
             Commit[] commits = JsonUtility.FromJson<Wrapper>($"{{\"items\":{jsonResponse}}}").items;
-
+    
+            bool hasNewCommits = false;
+    
             foreach (var commit in commits)
             {
+                NotifyUser(commit);
+    
                 if (!HasCommitBeenNotified(commit.sha))
                 {
-                    NotifyUser(commit);
+                    hasNewCommits = true;
                     MarkCommitAsNotified(commit.sha);
                 }
             }
+    
+            // Включаем иконку, если есть новые коммиты
+            MessageIcon.SetActive(hasNewCommits);
         }
         else
         {
             Debug.LogError("Ошибка проверки изменений: " + request.error);
+    
+            ErrorSpawner.SetActive(true);
+            GameObject errorInstance = Instantiate(ErrorObject, ErrorSpawnPlace);
+            Transform errorTextTransform = errorInstance.transform.Find("ErrorText");
+            TextMeshProUGUI panelErrorText = errorTextTransform.GetComponent<TextMeshProUGUI>();
+            panelErrorText.text = "Ошибка проверки изменений: " + request.error;
         }
     }
 
     private void NotifyUser(Commit commit)
     {
-        Debug.Log($"Новый коммит от {commit.commit.author.name}: {commit.commit.message}");
-        // Здесь можно добавить отображение уведомления в UI
+        Debug.Log($"Изменения: {commit.commit.message}");
+        
+        GameObject messageInstance = Instantiate(MessageObject, MessageSpawnPlace);
+        Transform messageTextTransform = messageInstance.transform.Find("MessageText");
+        TextMeshProUGUI panelMessageText = messageTextTransform.GetComponent<TextMeshProUGUI>();
+        panelMessageText.text = $"Изменения: {commit.commit.message}";
+
+        MessageIcon.SetActive(true);
     }
 
     private bool HasCommitBeenNotified(string sha)
