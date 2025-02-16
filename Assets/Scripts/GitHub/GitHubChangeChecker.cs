@@ -95,15 +95,32 @@ public class GitHubChangeChecker : MonoBehaviour
 
     private void NotifyUser(Commit commit)
     {
-        Debug.Log($"Изменения: {commit.commit.message}");
+        // Получаем полное сообщение коммита
+        string fullMessage = commit.commit.message;
+    
+        // Разделяем заголовок и описание (если есть)
+        string[] messageParts = fullMessage.Split(new[] { "\n\n" }, System.StringSplitOptions.None);
+    
+        // Если нет описания, пропускаем этот коммит
+        if (messageParts.Length < 2) return;
+    
+        string description = messageParts[1]; // Берём только описание
+    
+        // Проверяем, заканчивается ли описание на ']'
+        if (!description.EndsWith("]")) return;
+    
+        Debug.Log($"Описание изменений: {description}");
         
         GameObject messageInstance = Instantiate(MessageObject, MessageSpawnPlace);
         Transform messageTextTransform = messageInstance.transform.Find("MessageText");
         TextMeshProUGUI panelMessageText = messageTextTransform.GetComponent<TextMeshProUGUI>();
-        panelMessageText.text = $"Изменения: {commit.commit.message}";
-
+        panelMessageText.text = $"Изменения: {description}";
+    
         MessageIcon.SetActive(true);
     }
+
+
+
 
     private bool HasCommitBeenNotified(string sha)
     {
