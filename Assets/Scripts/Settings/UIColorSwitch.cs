@@ -8,35 +8,33 @@ using DG.Tweening;
 public class UIColorSwitch : MonoBehaviour
 {
     [Header("Arrays of UI Elements")]
-
     public Image[] uiHighContrastImages;
     public Image[] uiContrastImages;
     public Image[] uiDefaultImages;
     public TextMeshProUGUI[] texts;
 
     [Header("Color Settings")]
-    public Color targetBaseColor = Color.black; // Цвет, на который меняются объекты
-    public Color originalBaseColor = Color.white; // Исходный цвет объектов
-
-    public Color targetContrastColor = Color.white;
-    public Color originalContrastColor = Color.white;
-
-    public Color targetHighContrastColor = Color.white;
-    public Color originalHighContrastColor = Color.white;
-
-    public Color targetTextColor = Color.white; // Цвет, на который меняются объекты
-    public Color originalTextColor = Color.black; // Исходный цвет объектов
-    public float duration = 2f; // Длительность анимации
-
-    public bool isToggled = false; // Флаг переключения состояния
+    public Color targetBaseColor;
+    public Color originalBaseColor;
+    public Color targetContrastColor;
+    public Color originalContrastColor;
+    public Color targetHighContrastColor;
+    public Color originalHighContrastColor;
+    public Color targetTextColor;
+    public Color originalTextColor;
+    public float duration = 2f;
+    public bool isToggled = false;
 
     public Color newBaseColor;
     public Color newContrastColor;
     public Color newHighContrastColor;
     public Color newTextColor;
-    
 
-    // Метод для смены цвета, вызывается кнопкой
+    void Start()
+    {
+        MaterialFirst();
+    }
+
     public void ToggleObjectColors()
     {
         newBaseColor = isToggled ? originalBaseColor : targetBaseColor;
@@ -45,81 +43,109 @@ public class UIColorSwitch : MonoBehaviour
         newTextColor = isToggled ? originalTextColor : targetTextColor;
 
         ChangeColors();
-
-        isToggled = !isToggled; // Переключение состояния
+        isToggled = !isToggled;
     }
 
     public void ChangeColors()
     {
-        // Изменение цвета UI-изображений
         foreach (Image uiDImage in uiDefaultImages)
-        {
-            if (uiDImage != null)
-            {
-                uiDImage.DOColor(newBaseColor, duration);
-            }
-        }
+            if (uiDImage != null) uiDImage.DOColor(newBaseColor, duration);
 
         foreach (Image uiCImage in uiContrastImages)
-        {
-            if (uiCImage != null)
-            {
-                uiCImage.DOColor(newContrastColor, duration);
-            }
-        }
+            if (uiCImage != null) uiCImage.DOColor(newContrastColor, duration);
 
         foreach (Image uiHCImage in uiHighContrastImages)
-        {
-            if (uiHCImage != null)
-            {
-                uiHCImage.DOColor(newHighContrastColor, duration);
-            }
-        }
+            if (uiHCImage != null) uiHCImage.DOColor(newHighContrastColor, duration);
 
-        // Изменение цвета текстов
         foreach (TextMeshProUGUI text in texts)
-        {
-            if (text != null)
-            {
-                text.DOColor(newTextColor, duration);
-            }
-        }
+            if (text != null) text.DOColor(newTextColor, duration);
     }
 
     public void MaterialFirst()
     {
-        targetBaseColor = new Color(0.1f / 1.0f, 0.1f / 1.0f, 0.1f / 1.0f);
-        targetContrastColor = new Color(0.2f / 1.0f, 0.2f / 1.0f, 0.2f / 1.0f);
-        targetHighContrastColor = new Color(0.3f / 1.0f, 0.3f / 1.0f, 0.3f / 1.0f);
+        targetBaseColor = new Color(0.1f, 0.1f, 0.1f);
+        targetContrastColor = new Color(0.2f, 0.2f, 0.2f);
+        targetHighContrastColor = new Color(0.3f, 0.3f, 0.3f);
 
-        originalBaseColor = new Color(1 / 1.0f, 1 / 1.0f, 1 / 1.0f);
-        originalContrastColor = new Color(0.9f / 1.0f, 0.9f / 1.0f, 0.9f / 1.0f);
-        originalHighContrastColor = new Color(0.8f / 1.0f, 0.8f / 1.0f, 0.8f / 1.0f);
+        originalBaseColor = Color.white;
+        originalContrastColor = new Color(0.9f, 0.9f, 0.9f);
+        originalHighContrastColor = new Color(0.4705882f, 0.4705882f, 0.4705882f);
 
-        // Обновляем цвета для текущего состояния
-        newBaseColor = isToggled ? targetBaseColor : originalBaseColor;
-        newContrastColor = isToggled ? targetContrastColor : originalContrastColor;
-        newHighContrastColor = isToggled ? targetHighContrastColor : originalHighContrastColor;
-        newTextColor = isToggled ? targetTextColor : originalTextColor;
-
-        ChangeColors();
+        UpdateColors();
     }
+
     public void MaterialTwo()
     {
-        targetBaseColor = new Color(81 / 255f, 52 / 255f, 49 / 255f);
-        targetContrastColor = new Color(117 / 255f, 48 / 255f, 65 / 255f);
-        targetHighContrastColor = new Color(255 / 255f, 177 / 255f, 192 / 255f);
+        targetBaseColor = new Color(0.1f, 0.1f, 0.1f);
+        targetContrastColor = new Color(0.2f, 0.2f, 0.2f);
+        targetHighContrastColor = new Color(255 / 255f, 186 / 255f, 203 / 255f); // #FFBACB - Яркий акцент
+    
+        originalBaseColor = new Color(255 / 255f, 240 / 255f, 245 / 255f); // #FFF0F5 - Светлый фон
+        originalContrastColor = new Color(255 / 255f, 210 / 255f, 220 / 255f); // #FFD2DC - Контраст
+        originalHighContrastColor = new Color(191 / 255f, 40 / 255f, 95 / 255f); // #BF285F - Глубокий розовый
+    
+        UpdateColors();
+    }
 
-        originalBaseColor = new Color(255 / 255f, 248 / 255f, 247 / 255f);
-        originalContrastColor = new Color(255 / 255f, 177 / 255f, 192 / 255f);
-        originalHighContrastColor = new Color(146 / 255f, 71 / 255f, 89 / 255f);
+    public void MaterialThree() // Oceanic Theme
+    {
+        targetBaseColor = new Color(0.1f, 0.1f, 0.1f);
+        targetContrastColor = new Color(0.2f, 0.2f, 0.2f);
+        targetHighContrastColor = new Color(173 / 255f, 232 / 255f, 244 / 255f);
 
-        // Обновляем цвета для текущего состояния
+        originalBaseColor = new Color(255 / 255f, 250 / 255f, 244 / 255f);
+        originalContrastColor = new Color(200 / 255f, 230 / 255f, 233 / 255f);
+        originalHighContrastColor = new Color(150 / 255f, 200 / 255f, 220 / 255f);
+
+        UpdateColors();
+    }
+
+    public void MaterialFour() // Forest Theme
+    {
+        targetBaseColor = new Color(0.1f, 0.1f, 0.1f);
+        targetContrastColor = new Color(0.2f, 0.2f, 0.2f);
+        targetHighContrastColor = new Color(129 / 255f, 199 / 255f, 132 / 255f);
+
+        originalBaseColor = new Color(240 / 255f, 255 / 255f, 240 / 255f);
+        originalContrastColor = new Color(200 / 255f, 225 / 255f, 200 / 255f);
+        originalHighContrastColor = new Color(150 / 255f, 190 / 255f, 150 / 255f);
+
+        UpdateColors();
+    }
+
+    public void MaterialFive() // Sunset Theme
+    {
+        targetBaseColor = new Color(0.1f, 0.1f, 0.1f);
+        targetContrastColor = new Color(0.2f, 0.2f, 0.2f);
+        targetHighContrastColor = new Color(255 / 255f, 204 / 255f, 128 / 255f);
+
+        originalBaseColor = new Color(255 / 255f, 235 / 255f, 205 / 255f);
+        originalContrastColor = new Color(255 / 255f, 204 / 255f, 128 / 255f);
+        originalHighContrastColor = new Color(255 / 255f, 171 / 255f, 89 / 255f);
+
+        UpdateColors();
+    }
+
+    public void MaterialSix() // Розовая Material You
+    {
+        targetBaseColor = new Color(0.1f, 0.1f, 0.1f);
+        targetContrastColor = new Color(0.2f, 0.2f, 0.2f);
+        targetHighContrastColor = new Color(235 / 255f, 175 / 255f, 255 / 255f); // #EBAFFF - Светлый акцент
+    
+        originalBaseColor = new Color(250 / 255f, 240 / 255f, 255 / 255f); // #FAF0FF - Светлый фон
+        originalContrastColor = new Color(225 / 255f, 200 / 255f, 250 / 255f); // #E1C8FA - Контраст
+        originalHighContrastColor = new Color(130 / 255f, 45 / 255f, 165 / 255f); // #822DA5 - Глубокий пурпурный
+    
+        UpdateColors();
+    }
+
+
+    private void UpdateColors()
+    {
         newBaseColor = isToggled ? targetBaseColor : originalBaseColor;
         newContrastColor = isToggled ? targetContrastColor : originalContrastColor;
         newHighContrastColor = isToggled ? targetHighContrastColor : originalHighContrastColor;
         newTextColor = isToggled ? targetTextColor : originalTextColor;
-
         ChangeColors();
     }
 }
