@@ -12,6 +12,7 @@ public class EventDisplay : MonoBehaviour
     [SerializeField] private Sprite[] eventSprites; // Массив спрайтов
     [SerializeField] private Image Background;
     [SerializeField] private Image IconBackground;
+    [SerializeField] private Image IconObject;
     [SerializeField] private UIColorSwitch themeScript;
     [SerializeField] private string category;
 
@@ -25,6 +26,7 @@ public class EventDisplay : MonoBehaviour
             {
                 themeScript.AddImageToList(Background, "Contrast");
                 themeScript.AddImageToList(IconBackground, "Default");
+                themeScript.AddImageToList(IconObject, "NonMaterial");
                 themeScript.AddTextToList(dateText);
                 themeScript.AddTextToList(titleText);
                 themeScript.AddTextToList(descriptionText);

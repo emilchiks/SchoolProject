@@ -114,7 +114,8 @@ public class GitHubChangeChecker : MonoBehaviour
         GameObject messageInstance = Instantiate(MessageObject, MessageSpawnPlace);
         Transform messageTextTransform = messageInstance.transform.Find("MessageText");
         TextMeshProUGUI panelMessageText = messageTextTransform.GetComponent<TextMeshProUGUI>();
-        panelMessageText.text = $"Изменения: {description}";
+        //panelMessageText.text = $"Изменения: \n{description}";
+        panelMessageText.text = $"<b>Изменения:</b> \n{description}";
     
         MessageIcon.SetActive(true);
     }

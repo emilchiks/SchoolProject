@@ -143,6 +143,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2f2728f3ed5f58547a85cf4264b9a263, type: 3}
   Background: {fileID: 2714970991951727989}
   IconBackground: {fileID: 3328863273265419422}
+  IconObject: {fileID: 4714476935019504189}
   themeScript: {fileID: 0}
   category: 
 --- !u!1 &1682173155044597635

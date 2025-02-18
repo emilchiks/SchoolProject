@@ -66,8 +66,8 @@ PlayerSettings:
   use32BitDisplayBuffer: 1
   preserveFramebufferAlpha: 0
   disableDepthAndStencilBuffers: 0
-  androidStartInFullscreen: 0
-  androidRenderOutsideSafeArea: 0
+  androidStartInFullscreen: 1
+  androidRenderOutsideSafeArea: 1
   androidUseSwappy: 1
   androidBlitType: 0
   androidResizableWindow: 1
@@ -75,7 +75,7 @@ PlayerSettings:
   androidDefaultWindowHeight: 1080
   androidMinimumWindowWidth: 400
   androidMinimumWindowHeight: 300
-  androidFullscreenMode: 3
+  androidFullscreenMode: 1
   androidAutoRotationBehavior: 1
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
@@ -139,7 +139,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.2 Alpha
+  bundleVersion: Beta 0.1
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -169,7 +169,7 @@ PlayerSettings:
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 19
+  AndroidBundleVersionCode: 20
   AndroidMinSdkVersion: 24
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -387,7 +387,7 @@ PlayerSettings:
     m_Icons:
     - m_Textures:
       - {fileID: 2800000, guid: 42b6657fed5f5f54fb22916c33994c5e, type: 3}
-      - {fileID: 2800000, guid: d0585608ed2ba554780b7be0fa1f61b6, type: 3}
+      - {fileID: 2800000, guid: 3094b702956dcab4a8bbd2fa6d2bc057, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
@@ -418,7 +418,7 @@ PlayerSettings:
       m_Kind: 2
       m_SubKind: 
     - m_Textures:
-      - {fileID: 2800000, guid: d18dcce4e76ca994bb1015ac69ec5cf5, type: 3}
+      - {fileID: 2800000, guid: ebf00c240d61a29409a091d555ff06da, type: 3}
       m_Width: 192
       m_Height: 192
       m_Kind: 1
@@ -454,7 +454,7 @@ PlayerSettings:
       m_Kind: 1
       m_SubKind: 
     - m_Textures:
-      - {fileID: 2800000, guid: d18dcce4e76ca994bb1015ac69ec5cf5, type: 3}
+      - {fileID: 2800000, guid: 0ee4d5d7eadba3f4f81fdb1151f430e6, type: 3}
       m_Width: 192
       m_Height: 192
       m_Kind: 0
