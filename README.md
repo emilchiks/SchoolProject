@@ -18,7 +18,7 @@ School - это приложение к школе, созданное на Unit
 
 ## Загрузка и установка
 
-1. Скачайте .apk файл из [GitHub релизов](https://github.com/emilchiks/Storage-For-School-Project/releases)
+1. Скачайте .apk файл из [GitHub релизов](https://github.com/emilchiks/SchoolProject/releases)
 2. Откройте загруженный файл и установите приложение
 ## Обратная связь
 
