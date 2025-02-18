@@ -225,7 +225,7 @@ public class BookRequester : MonoBehaviour
 
         if (downloadButton != null)
         {
-            downloadButton.onClick.AddListener(() => StartCoroutine(DownloadFile(downloadUrl, fileName)));
+            downloadButton.onClick.AddListener(() => Application.OpenURL(downloadUrl));
         }
 
         Sprite coverSprite = Resources.Load<Sprite>("Covers/" + index);
