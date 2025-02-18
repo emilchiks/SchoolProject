@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class EventDisplay : MonoBehaviour
 {
@@ -9,6 +10,30 @@ public class EventDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Image eventImage; // Добавляем Image компонент
     [SerializeField] private Sprite[] eventSprites; // Массив спрайтов
+    [SerializeField] private Image Background;
+    [SerializeField] private Image IconBackground;
+    [SerializeField] private UIColorSwitch themeScript;
+    [SerializeField] private string category;
+
+    void Start()
+    {
+        GameObject obj = GameObject.Find("ThemeManager");
+        if (obj != null)
+        {
+            themeScript = obj.GetComponent<UIColorSwitch>();
+            if (themeScript != null)
+            {
+                themeScript.AddImageToList(Background, "Contrast");
+                themeScript.AddImageToList(IconBackground, "Default");
+                themeScript.AddTextToList(dateText);
+                themeScript.AddTextToList(titleText);
+                themeScript.AddTextToList(descriptionText);
+        
+                themeScript.LoadConfig();
+            }
+        }
+    }
+
 
     public void SetEventData(string date, string title, string description, int imageIndex)
     {
@@ -26,4 +51,5 @@ public class EventDisplay : MonoBehaviour
             Debug.LogWarning($"Неверный индекс изображения: {imageIndex}");
         }
     }
+
 }

@@ -88,14 +88,15 @@ public class GradeLoader : MonoBehaviour
         {
             if (grades.Contains(gradeButton.gradeName))
             {
-                gradeButton.button.interactable = true; // Включить кнопку
+                gradeButton.button.gameObject.SetActive(true);  // Включаем объект кнопки
             }
             else
             {
-                gradeButton.button.interactable = false; // Отключить кнопку
+                gradeButton.button.gameObject.SetActive(false); // Полностью выключаем объект
             }
         }
     }
+
 
     [Serializable]
     public class GradeButton

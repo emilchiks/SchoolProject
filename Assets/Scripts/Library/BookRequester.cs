@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using Newtonsoft.Json.Linq;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class BookRequester : MonoBehaviour
 {
@@ -34,6 +35,9 @@ public class BookRequester : MonoBehaviour
     public GameObject ErrorSpawner;
     public Transform ErrorSpawnPlace;
     public GameObject ErrorObject;
+
+    public UIColorSwitch themeScript;
+    public string category;
    
 
 
@@ -164,6 +168,8 @@ public class BookRequester : MonoBehaviour
         Transform yearTextTransform = bookInstance.transform.Find("YearText");
         Transform downloadButtonTransform = bookInstance.transform.Find("DownloadButton");
         Transform coverImageTransform = bookInstance.transform.Find("CoverImage");
+        Transform plateImageTransform = bookInstance.transform.Find("Plate");
+        Transform downloadIconTransform = bookInstance.transform.Find("DownloadButtonIcon");
 
         if (fileNameTextTransform == null || yearTextTransform == null || downloadButtonTransform == null || coverImageTransform == null)
         {
@@ -181,6 +187,8 @@ public class BookRequester : MonoBehaviour
         TextMeshProUGUI yearText = yearTextTransform.GetComponent<TextMeshProUGUI>();
         Button downloadButton = downloadButtonTransform.GetComponent<Button>();
         Image coverImage = coverImageTransform.GetComponent<Image>();
+        Image plateImage = plateImageTransform.GetComponent<Image>();
+        Image downloadIcon = downloadIconTransform.GetComponent<Image>();
 
         string bookName = "";
         string year = "";
@@ -237,8 +245,18 @@ public class BookRequester : MonoBehaviour
         {
             Debug.LogWarning("Cover not found: " + index);
         }
-    }
 
+        if(fileNameText != null && yearText != null && plateImage != null && downloadIcon != null && coverImage != null)
+        {
+            themeScript.AddImageToList(plateImage, "Contrast");
+            themeScript.AddImageToList(downloadIcon, "HighContrast");
+            themeScript.AddImageToList(coverImage, "HighContrast");
+            themeScript.AddTextToList(fileNameText);
+            themeScript.AddTextToList(yearText);
+
+            themeScript.LoadConfig();
+        }
+    }
     private IEnumerator DownloadFile(string url, string fileName)
     {
         using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -278,4 +296,5 @@ public class BookRequester : MonoBehaviour
         {
             Debug.LogError("File does not exist: " + filePath);
         }
-    }*/
+    }
+    */
