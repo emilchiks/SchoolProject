@@ -1,5 +1,5 @@
 # School
-![Logo](https://raw.githubusercontent.com/emilchiks/SchoolProject/refs/heads/main/Assets/Sprites/round_app_icon.png)
+![Logo](https://raw.githubusercontent.com/emilchiks/SchoolProject/refs/heads/main/Assets/Sprites/roundIcon.png)
 
 School - это приложение к школе, созданное на Unity, с помощью которого можно смотреть расписание, скачивать учебники и не только.
 
