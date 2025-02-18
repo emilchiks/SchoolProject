@@ -33,7 +33,7 @@ School - это приложение к школе, созданное на Unit
 
 ## Лицензия
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[GNU GPLv3](https://github.com/emilchiks/SchoolProject/blob/main/LICENSE)
 
 
 ## Автор
