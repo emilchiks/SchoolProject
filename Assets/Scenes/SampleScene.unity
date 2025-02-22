@@ -7131,9 +7131,6 @@ MonoBehaviour:
   ErrorObject: {fileID: 2727536795400989159, guid: 094a73cc478399849b8f04487d0b91dd, type: 3}
   themeScript: {fileID: 879188678}
   category: 
-  webScript: {fileID: 577581732}
-  webPlate: {fileID: 1442991150}
-  urlToOpen: 
 --- !u!114 &764027912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8532,7 +8529,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: v.0.2
+  m_text: v.0.2.1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 43c4f1f81f0b00348a7c00df6203b358, type: 2}
   m_sharedMaterial: {fileID: -2529895812473462903, guid: 43c4f1f81f0b00348a7c00df6203b358, type: 2}

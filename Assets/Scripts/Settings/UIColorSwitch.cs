@@ -54,6 +54,14 @@ public class UIColorSwitch : MonoBehaviour
 
     public void LoadConfig()
     {
+        targetBaseColor = new Color(0.1f, 0.1f, 0.1f);
+        targetContrastColor = new Color(0.2f, 0.2f, 0.2f);
+        targetHighContrastColor = Color.white;
+
+        originalBaseColor = Color.white;
+        originalContrastColor = new Color(0.9f, 0.9f, 0.9f);
+        originalHighContrastColor = Color.black;
+
         currentTheme = PlayerPrefs.GetInt("currentTheme");
         currentColor = PlayerPrefs.GetInt("currentColor");
 
@@ -62,23 +70,29 @@ public class UIColorSwitch : MonoBehaviour
             ThemeToggle.isOn = true;
         }
 
-        switch (currentColor)
+        if(currentColor == 0)
         {
-            case 0:
-                MaterialFirst();
-                break;
-            case 1:
-                MaterialTwo();
-                break;
-            case 2:
-                MaterialThree();
-                break;
-            case 3:
-                MaterialFour();
-                break;
-            case 4:
-                MaterialFive();
-                break;
+            MaterialFirst();
+        }
+        if(currentColor == 1)
+        {
+            MaterialTwo();
+        }
+        if(currentColor == 2)
+        {
+            MaterialThree();
+        }
+        if(currentColor == 3)
+        {
+            MaterialFour();
+        }
+        if(currentColor == 4)
+        {
+            MaterialFive();
+        }
+        if(currentColor == 5)
+        {
+            MaterialSix();
         }
     }
 
