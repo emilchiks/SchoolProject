@@ -30,6 +30,8 @@ School - это приложение к школе, созданное на Unit
 
 [Google Fonts (Иконки и шрифты, использованные в проекте)](https://fonts.google.com/)
 
+[unity-webview by gree](https://github.com/gree/unity-webview)
+
 
 ## Лицензия
 
