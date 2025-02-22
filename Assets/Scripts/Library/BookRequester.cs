@@ -38,8 +38,7 @@ public class BookRequester : MonoBehaviour
 
     public UIColorSwitch themeScript;
     public string category;
-   
-
+    
 
     void Start()
     {
@@ -170,6 +169,8 @@ public class BookRequester : MonoBehaviour
         Transform coverImageTransform = bookInstance.transform.Find("CoverImage");
         Transform plateImageTransform = bookInstance.transform.Find("Plate");
         Transform downloadIconTransform = bookInstance.transform.Find("DownloadButtonIcon");
+        Transform openButtonTransform = bookInstance.transform.Find("OpenButton");
+        Transform openIconTransform = bookInstance.transform.Find("OpenButtonIcon");
 
         if (fileNameTextTransform == null || yearTextTransform == null || downloadButtonTransform == null || coverImageTransform == null)
         {
@@ -189,6 +190,8 @@ public class BookRequester : MonoBehaviour
         Image coverImage = coverImageTransform.GetComponent<Image>();
         Image plateImage = plateImageTransform.GetComponent<Image>();
         Image downloadIcon = downloadIconTransform.GetComponent<Image>();
+        Button openButton = openButtonTransform.GetComponent<Button>();
+        Image openIcon = openIconTransform.GetComponent<Image>();
 
         string bookName = "";
         string year = "";
@@ -235,6 +238,15 @@ public class BookRequester : MonoBehaviour
         {
             downloadButton.onClick.AddListener(() => Application.OpenURL(downloadUrl));
         }
+        if (openButton != null)
+        {
+            // Формируем URL для просмотра файла на GitHub
+            string githubViewUrl = downloadUrl.Replace("https://raw.githubusercontent.com/", "https://github.com/")
+                                              .Replace("/main/", "/blob/main/");
+            
+            // Назначаем обработчик кнопки
+            openButton.onClick.AddListener(() => Application.OpenURL(githubViewUrl));
+        }
 
         Sprite coverSprite = Resources.Load<Sprite>("Covers/" + index);
         if (coverSprite != null)
@@ -246,10 +258,11 @@ public class BookRequester : MonoBehaviour
             Debug.LogWarning("Cover not found: " + index);
         }
 
-        if(fileNameText != null && yearText != null && plateImage != null && downloadIcon != null && coverImage != null)
+        if(fileNameText != null && yearText != null && plateImage != null && downloadIcon != null && coverImage != null && openIcon != null)
         {
             themeScript.AddImageToList(plateImage, "Contrast");
             themeScript.AddImageToList(downloadIcon, "HighContrast");
+            themeScript.AddImageToList(openIcon, "HighContrast");
             themeScript.AddImageToList(coverImage, "HighContrast");
             themeScript.AddTextToList(fileNameText);
             themeScript.AddTextToList(yearText);

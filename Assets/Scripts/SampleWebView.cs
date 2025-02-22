@@ -1,35 +1,16 @@
-/*
- * Copyright (C) 2012 GREE, Inc.
- * 
- * This software is provided 'as-is', without any express or implied
- * warranty.  In no event will the authors be held liable for any damages
- * arising from the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- * 
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- * 3. This notice may not be removed or altered from any source distribution.
- */
-
 using System.Collections;
 using UnityEngine;
-#if UNITY_2018_4_OR_NEWER
 using UnityEngine.Networking;
-#endif
 using UnityEngine.UI;
 
 public class SampleWebView : MonoBehaviour
 {
     public string Url;
-    public Text status;
     WebViewObject webViewObject;
+
+    public GameObject WebPlate;
+
+    public Texture2D closeButtonTexture;
 
     IEnumerator Start()
     {
@@ -41,20 +22,14 @@ public class SampleWebView : MonoBehaviour
             cb: (msg) =>
             {
                 Debug.Log(string.Format("CallFromJS[{0}]", msg));
-                status.text = msg;
-                status.GetComponent<Animation>().Play();
             },
             err: (msg) =>
             {
                 Debug.Log(string.Format("CallOnError[{0}]", msg));
-                status.text = msg;
-                status.GetComponent<Animation>().Play();
             },
             httpErr: (msg) =>
             {
                 Debug.Log(string.Format("CallOnHttpError[{0}]", msg));
-                status.text = msg;
-                status.GetComponent<Animation>().Play();
             },
             started: (msg) =>
             {
@@ -156,7 +131,7 @@ public class SampleWebView : MonoBehaviour
 
         //webViewObject.SetScrollbarsVisibility(true);
 
-        webViewObject.SetMargins(5, 100, 5, Screen.height / 4);
+        webViewObject.SetMargins(0, 200, 0, 0);
         webViewObject.SetTextZoom(100);  // android only. cf. https://stackoverflow.com/questions/21647641/android-webview-set-font-size-system-default/47017410#47017410
         //webViewObject.SetMixedContentMode(2);  // android only. 0: MIXED_CONTENT_ALWAYS_ALLOW, 1: MIXED_CONTENT_NEVER_ALLOW, 2: MIXED_CONTENT_COMPATIBILITY_MODE
         webViewObject.SetVisibility(true);
@@ -208,58 +183,19 @@ public class SampleWebView : MonoBehaviour
 
     void OnGUI()
     {
-        var x = 10;
-
-        GUI.enabled = (webViewObject == null) ? false : webViewObject.CanGoBack();
-        if (GUI.Button(new Rect(x, 10, 80, 80), "<")) {
-            webViewObject?.GoBack();
-        }
-        GUI.enabled = true;
-        x += 90;
-
-        GUI.enabled = (webViewObject == null) ? false : webViewObject.CanGoForward();
-        if (GUI.Button(new Rect(x, 10, 80, 80), ">")) {
-            webViewObject?.GoForward();
-        }
-        GUI.enabled = true;
-        x += 90;
-
-        if (GUI.Button(new Rect(x, 10, 80, 80), "r")) {
-            webViewObject?.Reload();
-        }
-        x += 90;
-
-        GUI.TextField(new Rect(x, 10, 180, 80), "" + ((webViewObject == null) ? 0 : webViewObject.Progress()));
-        x += 190;
-
-        if (GUI.Button(new Rect(x, 10, 80, 80), "*")) {
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+        buttonStyle.normal.background = closeButtonTexture;
+        buttonStyle.border = new RectOffset(0, 0, 0, 0);
+        GUI.color = Color.gray; 
+        if (GUI.Button(new Rect(900, 100, 100, 100), "", buttonStyle)) 
+        {
             var g = GameObject.Find("WebViewObject");
             if (g != null) {
                 Destroy(g);
+                WebPlate.SetActive(false);
             } else {
                 StartCoroutine(Start());
             }
         }
-        x += 90;
-
-        if (GUI.Button(new Rect(x, 10, 80, 80), "c")) {
-            webViewObject?.GetCookies(Url);
-        }
-        x += 90;
-
-        if (GUI.Button(new Rect(x, 10, 80, 80), "x")) {
-            webViewObject?.ClearCookies();
-        }
-        x += 90;
-
-        if (GUI.Button(new Rect(x, 10, 80, 80), "D")) {
-            webViewObject?.SetInteractionEnabled(false);
-        }
-        x += 90;
-
-        if (GUI.Button(new Rect(x, 10, 80, 80), "E")) {
-            webViewObject?.SetInteractionEnabled(true);
-        }
-        x += 90;
     }
 }
